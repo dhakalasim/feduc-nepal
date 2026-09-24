@@ -30,25 +30,37 @@ python3 -m http.server 8000
 
 Then open http://localhost:8000 in a browser.
 
-## Deploying to Vercel (www.feducnepal.org)
+## Deployment status
 
-1. Go to [vercel.com](https://vercel.com) and sign in with GitHub.
-2. **Add New → Project** → import the `dhakalasim/feduc-nepal` repository.
-3. Framework preset: **Other** (no build command, no output directory
-   override needed) → **Deploy**.
-4. Once it deploys to a `*.vercel.app` URL, confirm the site loads and the
-   contact form opens an email draft correctly.
-5. **Project → Settings → Domains** → add `feducnepal.org` and
-   `www.feducnepal.org`, setting `www.feducnepal.org` as the primary (Vercel
-   will offer to redirect the apex to it).
-6. At your domain registrar (wherever `feducnepal.org` is registered), add
-   the DNS records Vercel shows on that screen — typically:
-   - `CNAME` `www` → `cname.vercel-dns.com`
-   - `A` `@` → `76.76.21.21` (or delegate to Vercel's nameservers if you'd
-     rather it manage the whole zone)
-7. Wait for DNS to propagate (usually minutes, can take up to 24h) — Vercel
-   auto-provisions a free TLS certificate once it verifies.
+Live in production on Vercel: **https://feduc-nepal.vercel.app**
+(project `asim-dhakals-projects/feduc-nepal`).
 
-Every push to `main` auto-deploys after this is connected. The CLI can also
-deploy directly: `vercel --prod` from the repo root (requires `vercel login`
-first).
+`feducnepal.org` and `www.feducnepal.org` are already added to the Vercel
+project but **not yet resolving** — add these records at your domain
+registrar (wherever `feducnepal.org` is registered) to finish the cutover:
+
+| Type | Host | Value |
+|------|------|-------|
+| A    | `@`  | `76.76.21.21` |
+| A    | `www`| `76.76.21.21` |
+
+(Alternative: point the domain's nameservers at `ns1.vercel-dns.com` and
+`ns2.vercel-dns.com` to let Vercel manage the whole DNS zone instead of
+individual records.) Vercel auto-provisions a free TLS certificate once it
+verifies the records — check status with `vercel domains inspect
+feducnepal.org`.
+
+**GitHub auto-deploy is not yet connected** — `vercel git connect` failed
+because the Vercel GitHub App isn't authorized for this repo yet. To fix:
+go to [vercel.com/dashboard](https://vercel.com/dashboard) → the
+`feduc-nepal` project → Settings → Git → Connect, and authorize/select the
+`dhakalasim/feduc-nepal` repository (or check
+[github.com/settings/installations](https://github.com/settings/installations)
+to confirm the Vercel app has access to this repo). Until that's connected,
+deploy manually after pushing:
+
+```
+vercel --prod
+```
+
+from the repo root (requires `vercel login` once).
